@@ -10,12 +10,12 @@ class AppStrings {
   static const String deleteRecord = 'Delete Record';
 
   // Labels & Hints
-  static const String searchHint = 'Search by name or mobile';
+  static const String searchHint = 'Search by name, number or case type';
   static const String customerDetails = 'Customer Details';
   static const String customerName = 'Customer Name *';
   static const String mobileNumber = 'Mobile Number';
   static const String visitInformation = 'Visit Information';
-  static const String visitPurpose = 'Visit Purpose';
+  static const String visitPurpose = 'Case Type';
   static const String visitDate = 'Visit Date';
   static const String notes = 'Notes';
   static const String cancel = 'Cancel';
@@ -33,7 +33,7 @@ class AppStrings {
   static const String noRecordsYet =
       'No customer records yet.\nTap the + button to add one.';
   static const String noMatchesFound = 'No matches found';
-  static const String noPurposeSpecified = 'No purpose specified';
+  static const String noPurposeSpecified = 'No case type specified';
   static const String deleteConfirmation =
       'Are you sure you want to delete the record for ';
   static const String deleteSuccess = ' deleted successfully';

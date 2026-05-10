@@ -28,7 +28,8 @@ class CustomerController extends ChangeNotifier {
       final query = _searchQuery.toLowerCase();
       filteredList = filteredList.where((customer) {
         return customer.name.toLowerCase().contains(query) ||
-            customer.mobile.contains(query);
+            customer.mobile.contains(query) ||
+            customer.purpose.toLowerCase().contains(query);
       }).toList();
     }
 
