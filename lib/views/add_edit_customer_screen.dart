@@ -179,6 +179,16 @@ class _AddEditCustomerScreenState extends State<AddEditCustomerScreen> {
                           prefixIcon: Icon(Icons.phone_outlined),
                         ),
                         keyboardType: TextInputType.phone,
+                        validator: (value) {
+                          if (value == null || value.trim().isEmpty) {
+                            return AppStrings.mobileRequired;
+                          }
+                          final digits = value.replaceAll(RegExp(r'[^0-9]'), '');
+                          if (digits.length < 7) {
+                            return AppStrings.mobileInvalid;
+                          }
+                          return null;
+                        },
                       ),
                       const SizedBox(height: 16),
                       TextFormField(
@@ -190,6 +200,15 @@ class _AddEditCustomerScreenState extends State<AddEditCustomerScreen> {
                         ),
                         keyboardType: const TextInputType.numberWithOptions(
                             decimal: false),
+                        validator: (value) {
+                          if (value == null || value.trim().isEmpty) {
+                            return AppStrings.feesRequired;
+                          }
+                          if (int.tryParse(value.trim()) == null) {
+                            return AppStrings.feesInvalid;
+                          }
+                          return null;
+                        },
                       ),
                       const SizedBox(height: 24),
                       Text(
@@ -209,6 +228,12 @@ class _AddEditCustomerScreenState extends State<AddEditCustomerScreen> {
                           prefixIcon: Icon(Icons.info_outline),
                         ),
                         textCapitalization: TextCapitalization.sentences,
+                        validator: (value) {
+                          if (value == null || value.trim().isEmpty) {
+                            return AppStrings.purposeRequired;
+                          }
+                          return null;
+                        },
                       ),
                       const SizedBox(height: 16),
                       InkWell(

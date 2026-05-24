@@ -44,4 +44,10 @@ class AppStrings {
 
   // Validators
   static const String nameRequired = 'Please enter customer name';
+  static const String mobileRequired = 'Please enter mobile number';
+  static const String mobileInvalid = 'Please enter a valid mobile number';
+  static const String purposeRequired = 'Please enter case type';
+  static const String visitDateRequired = 'Please select a visit date';
+  static const String feesRequired = 'Please enter fees amount';
+  static const String feesInvalid = 'Please enter a valid number';
 }
