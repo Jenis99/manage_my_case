@@ -37,7 +37,7 @@ class _AddEditCustomerScreenState extends State<AddEditCustomerScreen> {
     _notesController =
         TextEditingController(text: widget.customer?.notes ?? '');
     _feesController = TextEditingController(
-        text: widget.customer?.feesAmount.toString() ?? '0');
+      text: widget.customer != null ? widget.customer!.feesAmount.toString() : '');
     _visitDate = widget.customer?.visitDate ?? DateTime.now();
   }
 
