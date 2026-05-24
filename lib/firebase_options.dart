@@ -65,5 +65,4 @@ class DefaultFirebaseOptions {
     storageBucket: 'lawyer-app-3e62b.firebasestorage.app',
     iosBundleId: 'com.example.mahadevAssociate',
   );
-
 }

@@ -6,10 +6,23 @@ import '../models/customer_model.dart';
 import '../utils/app_strings.dart';
 import 'add_edit_customer_screen.dart';
 
-class CustomerDetailsScreen extends StatelessWidget {
+class CustomerDetailsScreen extends StatefulWidget {
   final CustomerModel customer;
 
   const CustomerDetailsScreen({super.key, required this.customer});
+
+  @override
+  State<CustomerDetailsScreen> createState() => _CustomerDetailsScreenState();
+}
+
+class _CustomerDetailsScreenState extends State<CustomerDetailsScreen> {
+  late CustomerModel _customer;
+
+  @override
+  void initState() {
+    super.initState();
+    _customer = widget.customer;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -23,13 +36,31 @@ class CustomerDetailsScreen extends StatelessWidget {
         actions: [
           IconButton(
             icon: const Icon(Icons.edit),
-            onPressed: () {
-              Navigator.push(
+            onPressed: () async {
+              await Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (_) => AddEditCustomerScreen(customer: customer),
+                  builder: (_) => AddEditCustomerScreen(customer: _customer),
                 ),
               );
+
+              // After returning from the edit screen, refresh the customer
+              if (!mounted) return;
+              final controller =
+                  Provider.of<CustomerController>(context, listen: false);
+              final id = _customer.id;
+              if (id != null) {
+                final updated = controller.getCustomerById(id);
+                if (updated != null) {
+                  setState(() {
+                    _customer = updated;
+                  });
+                } else {
+                  if (mounted) Navigator.pop(context);
+                }
+              } else {
+                if (mounted) Navigator.pop(context);
+              }
             },
             tooltip: AppStrings.edit,
           ),
@@ -49,9 +80,9 @@ class CustomerDetailsScreen extends StatelessWidget {
             _buildInfoCard(
               context,
               icon: Icons.person,
-              title: customer.name,
-              subtitle: customer.mobile.isNotEmpty
-                  ? customer.mobile
+              title: _customer.name,
+              subtitle: _customer.mobile.isNotEmpty
+                  ? _customer.mobile
                   : AppStrings.mobileNumber,
               isAvatar: true,
             ),
@@ -60,16 +91,16 @@ class CustomerDetailsScreen extends StatelessWidget {
             _buildInfoCard(
               context,
               icon: Icons.calendar_today,
-              title: dateFormat.format(customer.visitDate),
-              subtitle: timeFormat.format(customer.visitDate),
+              title: dateFormat.format(_customer.visitDate),
+              subtitle: timeFormat.format(_customer.visitDate),
             ),
             const SizedBox(height: 12),
             _buildInfoCard(
               context,
               icon: Icons.info_outline,
               title: AppStrings.visitPurpose,
-              subtitle: customer.purpose.isNotEmpty
-                  ? customer.purpose
+              subtitle: _customer.purpose.isNotEmpty
+                  ? _customer.purpose
                   : AppStrings.noPurposeSpecified,
             ),
             const SizedBox(height: 12),
@@ -77,10 +108,10 @@ class CustomerDetailsScreen extends StatelessWidget {
               context,
               icon: Icons.currency_rupee,
               title: AppStrings.feesAmount,
-              subtitle: '₹${customer.feesAmount}',
+              subtitle: '₹${_customer.feesAmount}',
             ),
             const SizedBox(height: 24),
-            if (customer.notes.isNotEmpty) ...[
+            if (_customer.notes.isNotEmpty) ...[
               _buildSectionTitle(context, AppStrings.notes),
               Container(
                 width: double.infinity,
@@ -91,7 +122,7 @@ class CustomerDetailsScreen extends StatelessWidget {
                   border: Border.all(color: Colors.grey[300]!),
                 ),
                 child: Text(
-                  customer.notes,
+                  _customer.notes,
                   style: TextStyle(
                       fontSize: 15, color: Colors.grey[800], height: 1.5),
                 ),
@@ -181,7 +212,7 @@ class CustomerDetailsScreen extends StatelessWidget {
       context: context,
       builder: (dialogContext) => AlertDialog(
         title: const Text(AppStrings.deleteRecord),
-        content: Text('${AppStrings.deleteConfirmation}${customer.name}?'),
+        content: Text('${AppStrings.deleteConfirmation}${_customer.name}?'),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
         actions: [
           TextButton(
@@ -193,14 +224,28 @@ class CustomerDetailsScreen extends StatelessWidget {
               final controller =
                   Provider.of<CustomerController>(context, listen: false);
               try {
-                await controller.deleteCustomer(customer.id!);
+                final id = _customer.id;
+                if (id == null) {
+                  if (context.mounted) {
+                    Navigator.pop(dialogContext);
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text('${AppStrings.deleteError}Invalid ID'),
+                        backgroundColor: Colors.red,
+                      ),
+                    );
+                  }
+                  return;
+                }
+
+                await controller.deleteCustomer(id);
                 if (context.mounted) {
                   Navigator.pop(dialogContext); // Close dialog
                   Navigator.pop(context); // Go back to list
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(
                       content:
-                          Text('${customer.name}${AppStrings.deleteSuccess}'),
+                          Text('${_customer.name}${AppStrings.deleteSuccess}'),
                       backgroundColor: Colors.green,
                     ),
                   );

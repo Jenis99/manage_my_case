@@ -128,6 +128,10 @@ class _CustomerListScreenState extends State<CustomerListScreen> {
                 builder: (context, controller, child) {
                   final customers = controller.customers;
 
+                  if (controller.isLoading) {
+                    return const Center(child: CircularProgressIndicator());
+                  }
+
                   if (customers.isEmpty) {
                     return Center(
                       child: Column(

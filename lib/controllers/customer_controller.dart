@@ -7,6 +7,7 @@ class CustomerController extends ChangeNotifier {
   final FirebaseService _firebaseService = FirebaseService();
   List<CustomerModel> _customers = [];
   StreamSubscription<List<CustomerModel>>? _customersSubscription;
+  bool _isLoading = true;
   String _searchQuery = '';
   DateTime? _selectedDate;
 
@@ -15,8 +16,11 @@ class CustomerController extends ChangeNotifier {
   }
 
   void _initCustomersStream() {
-    _customersSubscription = _firebaseService.getCustomersStream().listen((customersList) {
+    _isLoading = true;
+    _customersSubscription =
+        _firebaseService.getCustomersStream().listen((customersList) {
       _customers = customersList;
+      if (_isLoading) _isLoading = false;
       notifyListeners();
     });
   }
@@ -48,17 +52,28 @@ class CustomerController extends ChangeNotifier {
     }
 
     // Filter by selected date
-    if (_selectedDate != null) {
+    final selectedDate = _selectedDate;
+    if (selectedDate != null) {
       filteredList = filteredList.where((customer) {
-        return customer.visitDate.year == _selectedDate!.year &&
-            customer.visitDate.month == _selectedDate!.month &&
-            customer.visitDate.day == _selectedDate!.day;
+        return customer.visitDate.year == selectedDate.year &&
+            customer.visitDate.month == selectedDate.month &&
+            customer.visitDate.day == selectedDate.day;
       }).toList();
     }
 
     // Sort by visit date (latest first)
     filteredList.sort((a, b) => b.visitDate.compareTo(a.visitDate));
     return filteredList;
+  }
+
+  bool get isLoading => _isLoading;
+
+  CustomerModel? getCustomerById(String id) {
+    try {
+      return _customers.firstWhere((c) => c.id == id);
+    } catch (_) {
+      return null;
+    }
   }
 
   Future<void> addCustomer(CustomerModel customer) async {
