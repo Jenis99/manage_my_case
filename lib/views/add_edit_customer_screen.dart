@@ -37,7 +37,7 @@ class _AddEditCustomerScreenState extends State<AddEditCustomerScreen> {
     _notesController =
         TextEditingController(text: widget.customer?.notes ?? '');
     _feesController = TextEditingController(
-        text: widget.customer?.feesAmount.toString() ?? '0.0');
+      text: widget.customer?.feesAmount.toString() ?? '0');
     _visitDate = widget.customer?.visitDate ?? DateTime.now();
   }
 
@@ -85,7 +85,7 @@ class _AddEditCustomerScreenState extends State<AddEditCustomerScreen> {
         purpose: _purposeController.text.trim(),
         visitDate: _visitDate,
         notes: _notesController.text.trim(),
-        feesAmount: double.tryParse(_feesController.text.trim()) ?? 0.0,
+        feesAmount: int.tryParse(_feesController.text.trim()) ?? 0,
       );
 
       if (widget.customer == null) {
@@ -185,8 +185,8 @@ class _AddEditCustomerScreenState extends State<AddEditCustomerScreen> {
                         border: OutlineInputBorder(),
                         prefixIcon: Icon(Icons.currency_rupee),
                       ),
-                      keyboardType:
-                          const TextInputType.numberWithOptions(decimal: true),
+                        keyboardType:
+                          const TextInputType.numberWithOptions(decimal: false),
                     ),
                     const SizedBox(height: 24),
                     Text(

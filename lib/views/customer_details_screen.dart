@@ -77,7 +77,7 @@ class CustomerDetailsScreen extends StatelessWidget {
               context,
               icon: Icons.currency_rupee,
               title: AppStrings.feesAmount,
-              subtitle: '₹${customer.feesAmount.toStringAsFixed(2)}',
+              subtitle: '₹${customer.feesAmount}',
             ),
             const SizedBox(height: 24),
             if (customer.notes.isNotEmpty) ...[
