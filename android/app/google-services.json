@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "624082632708",
+    "project_id": "lawyer-app-3e62b",
+    "storage_bucket": "lawyer-app-3e62b.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:624082632708:android:ef47674f6c53317ddfb551",
+        "android_client_info": {
+          "package_name": "com.example.mahadev_associate"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCQTKrJ-WJypQlWru254W5Zi2cmJwvz-2Q"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

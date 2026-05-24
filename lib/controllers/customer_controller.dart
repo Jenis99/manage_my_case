@@ -1,11 +1,25 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import '../models/customer_model.dart';
+import '../services/firebase_service.dart';
 
 class CustomerController extends ChangeNotifier {
-  // In-memory list for demo purposes
-  final List<CustomerModel> _customers = [];
+  final FirebaseService _firebaseService = FirebaseService();
+  List<CustomerModel> _customers = [];
+  StreamSubscription<List<CustomerModel>>? _customersSubscription;
   String _searchQuery = '';
   DateTime? _selectedDate;
+
+  CustomerController() {
+    _initCustomersStream();
+  }
+
+  void _initCustomersStream() {
+    _customersSubscription = _firebaseService.getCustomersStream().listen((customersList) {
+      _customers = customersList;
+      notifyListeners();
+    });
+  }
 
   String get searchQuery => _searchQuery;
   DateTime? get selectedDate => _selectedDate;
@@ -21,7 +35,7 @@ class CustomerController extends ChangeNotifier {
   }
 
   List<CustomerModel> get customers {
-    List<CustomerModel> filteredList = _customers;
+    List<CustomerModel> filteredList = List.from(_customers);
 
     // Filter by search query
     if (_searchQuery.isNotEmpty) {
@@ -48,22 +62,20 @@ class CustomerController extends ChangeNotifier {
   }
 
   Future<void> addCustomer(CustomerModel customer) async {
-    // Generate a simple unique ID
-    customer.id = DateTime.now().millisecondsSinceEpoch.toString();
-    _customers.add(customer);
-    notifyListeners();
+    await _firebaseService.addCustomer(customer);
   }
 
   Future<void> updateCustomer(CustomerModel customer) async {
-    final index = _customers.indexWhere((c) => c.id == customer.id);
-    if (index != -1) {
-      _customers[index] = customer;
-      notifyListeners();
-    }
+    await _firebaseService.updateCustomer(customer);
   }
 
   Future<void> deleteCustomer(String id) async {
-    _customers.removeWhere((c) => c.id == id);
-    notifyListeners();
+    await _firebaseService.deleteCustomer(id);
+  }
+
+  @override
+  void dispose() {
+    _customersSubscription?.cancel();
+    super.dispose();
   }
 }
